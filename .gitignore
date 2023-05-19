@@ -1,0 +1,17 @@
+CalculoMelhorRota/bin
+CalculoMelhorRota/obj
+CalculoMelhorRota.Application/bin
+CalculoMelhorRota.Application/obj
+CalculoMelhorRota.CrossCutting.IOC/bin
+CalculoMelhorRota.CrossCutting.IOC/obj
+CalculoMelhorRota.CrossCutting.Util/bin
+CalculoMelhorRota.CrossCutting.Util/obj
+CalculoMelhorRota.Domain/bin
+CalculoMelhorRota.Domain/obj
+CalculoMelhorRota.Infra/bin
+CalculoMelhorRota.Infra/obj
+CalculoMelhorRota.Infra.Data/bin
+CalculoMelhorRota.Infra.Data/obj
+CalculoMelhorRotaConsole/bin
+CalculoMelhorRotaConsole/obj
+.vs
