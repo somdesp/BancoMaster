@@ -1,12 +1,12 @@
 ﻿using CalculoMelhorRota.Application.AppServices;
 using CalculoMelhorRota.Application.Interfaces.AppServices;
+using CalculoMelhorRota.CrossCutting.Util.Configs;
 using CalculoMelhorRota.Domain.Interfaces;
 using CalculoMelhorRota.Domain.Service;
 using CalculoMelhorRota.Infra.Data.Repositories;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EConstrumarket.Construmanager.Core.CrossCutting.IoC.DependencyInjection
+namespace CalculoMelhorRota.CrossCutting.IOC.DependencyInjection
 {
 
     public static class CustomService
@@ -17,7 +17,9 @@ namespace EConstrumarket.Construmanager.Core.CrossCutting.IoC.DependencyInjectio
             #region Injeções Serviços
             services.AddScoped<IRotasAppService, RotasAppService>()
                     .AddScoped<IRotasService, RotasService>()
-                    .AddScoped<IGlobalAppService, GlobalAppService>();
+                    .AddScoped<IGlobalAppService, GlobalAppService>()
+                    .AddScoped<INotifier, Notifier>()
+;
             #endregion
 
             #region Injeções Repositórios

@@ -40,8 +40,4 @@
   <ItemGroup>
     <ProjectReference Include="..\CalculoMelhorRota.CrossCutting.IOC\CalculoMelhorRota.CrossCutting.IOC.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Config\" />
-  </ItemGroup>
 </Project>

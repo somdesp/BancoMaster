@@ -1,6 +1,6 @@
+using CalculoMelhorRota.CrossCutting.IOC.AutoMapping;
+using CalculoMelhorRota.CrossCutting.IOC.DependencyInjection;
 using CalculoMelhorRota.CrossCutting.Util.Configs;
-using EConstrumarket.Construmanager.Core.CrossCutting.IoC.AutoMapping;
-using EConstrumarket.Construmanager.Core.CrossCutting.IoC.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

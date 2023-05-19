@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EConstrumarket.Construmanager.Core.CrossCutting.IoC.AutoMapping
+namespace CalculoMelhorRota.CrossCutting.IOC.AutoMapping
 {
     public static class CustomAutoMapping
     {

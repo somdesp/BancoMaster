@@ -1,37 +1,26 @@
 ﻿using CalculoMelhorRota.CrossCutting.Util.Configs;
 using CalculoMelhorRota.Domain.Entity;
 using CalculoMelhorRota.Domain.Interfaces;
-using EConstrumarket.Construmanager.Core.CrossCutting.IoC.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using CalculoMelhorRotaConsole.Interfaces;
 using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 
 namespace CalculoMelhorRotaConsole.Service
 {
-    public class AppService
+    public class AppService : IAppService
     {
+        private readonly IRotasService _rotaService;
+        private readonly INotifier _notifier;
+
+        public AppService(INotifier notifier, IRotasService rotasService)
+        {
+            _rotaService = rotasService;
+            _notifier = notifier;
+        }
         public void ExecutaCalculoRota(string pathCSV)
         {
-            #region Injeção de dependencia
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Path.Combine(AppContext.BaseDirectory))
-                .AddJsonFile("appsettings.json", optional: true);
-
-            var Configuration = builder.Build();
-
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddCustomService();
-
-            serviceCollection.Configure<AppSettingsUtils>(Configuration.GetSection(nameof(AppSettingsUtils)));
-
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-
-            var rotasService = serviceProvider.GetService<IRotasService>();
-            #endregion
-
             var rotas = new List<Rotas>();
 
             using (TextFieldParser csvParser = new TextFieldParser(pathCSV))
@@ -50,16 +39,35 @@ namespace CalculoMelhorRotaConsole.Service
                     });
                 }
             }
-            rotasService.Insert(rotas);
+            _rotaService.Insert(rotas);
+            if (!OperationValid())
+            {
+                Console.WriteLine(_notifier.GetNotifications().Select(n => n.Message));
+                return;
+            }
 
             while (true)
             {
                 Console.WriteLine("");
-                Console.WriteLine("Digite a rota:");
+                Console.WriteLine("Aperte (Ctl + C) para sair ou digite a rota: ex (GRU-SCL)");
                 var rotakey = Console.ReadLine();
-                var resultadoFinal = rotasService.MelhorRota(rotakey);
-                Console.WriteLine(resultadoFinal);
+                var resultadoFinal = _rotaService.MelhorRota(rotakey);
+                if (!OperationValid())
+                    Console.WriteLine(_notifier.GetNotifications().Select(n => n.Message).First().ToString());
+                else
+                    Console.WriteLine(resultadoFinal);
+
+                _notifier.ClearErros();
+
             }
+        }
+
+        protected bool OperationValid()
+        {
+            if (_notifier.HasErroCode() || _notifier.HasNotification())
+                return false;
+
+            return true;
         }
     }
 }

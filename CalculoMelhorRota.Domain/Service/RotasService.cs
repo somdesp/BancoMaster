@@ -1,23 +1,39 @@
-﻿using CalculoMelhorRota.Domain.Entity;
+﻿using CalculoMelhorRota.CrossCutting.Util.Configs;
+using CalculoMelhorRota.Domain.Entity;
 using CalculoMelhorRota.Domain.Interfaces;
+using CalculoMelhorRota.Domain.Validation;
+using FluentValidation;
+using FluentValidation.Results;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace CalculoMelhorRota.Domain.Service
 {
-    public class RotasService : IRotasService
+    public class RotasService : BaseService, IRotasService
     {
         private readonly IRotasRepository _repository;
-        public RotasService(IRotasRepository repository)
+        public RotasService(INotifier notifier, IRotasRepository repository) : base(notifier)
         {
             _repository = repository;
         }
         public IEnumerable<Rotas> Insert(IEnumerable<Rotas> rotas)
         {
+            //Valida se os dados estao corretos
+            var resulValidation = new RotasCollectionValidator();
+            ValidationResult results = resulValidation.Validate(rotas);
+
+            if (!results.IsValid)
+            {
+                foreach (var failure in results.Errors)
+                {
+                    Notification(failure.ErrorMessage);
+                }
+                return null;
+            }
+
             List<Rotas> rotasInseridas = _repository.GetRotas();
             rotasInseridas.AddRange(rotas);
-
+            //Remove duplicidades
             rotasInseridas = rotasInseridas.GroupBy(x => new { x.Origem, x.Destino }).Select(o => o.First()).ToList();
             _repository.Insert(rotasInseridas);
 
@@ -26,53 +42,44 @@ namespace CalculoMelhorRota.Domain.Service
 
         public string MelhorRota(string srcRotas)
         {
-            List<Rotas> rotas = _repository.GetRotas();
-
-            rotas = rotas.OrderByDescending(x => x.Valor).ToList();
+            //Validação das entradas
+            if (srcRotas.Split('-').Length != 2)
+            {
+                Notification("Rota deve seguir o padrão ex:(GRU-SCL)");
+                return null;
+            }
 
             var origem = srcRotas.Split('-')[0];
             var destino = srcRotas.Split('-')[1];
 
+            //Retorna as rotas do CSV
+            List<Rotas> rotas = _repository.GetRotas();
+            //Filtra todas as origens possiveis
             var origens = rotas.Where(x => x.Origem.ToLower() == origem.ToLower()).ToList();
-
-            List<Resultado> resultados = new List<Resultado>();
-
-            for (var k = 0; k < origens.Count(); ++k)
+            //Valida se o Destino e origem existe
+            if (!origens.Any())
             {
-                string destinoAux = origens[k].Destino;
-                string destinoFinal = origens[k].Origem;
-                int valorFinal = origens[k].Valor;
-
-                for (int j = 0; j < rotas.Count(); j++)
-                {
-                    if (destino.ToLower() == destinoAux.ToLower())
-                    {
-                        break;
-                    }
-
-                    for (int i = 0; i < rotas.Count(); i++)
-                    {
-                        if (rotas[i].Origem.ToLower() == destinoAux.ToLower())
-                        {
-                            valorFinal = valorFinal + rotas[i].Valor;
-                            destinoFinal = destinoFinal + "-" + rotas[i].Origem;
-                            destinoAux = rotas[i].Destino;
-                        }
-                    }
-                }
-
-                if (destino.ToLower() != destinoAux.ToLower())
-                    continue;
-
-                destinoFinal = destinoFinal + "-" + destinoAux;
-                resultados.Add(new Resultado
-                {
-                    Rota = destinoFinal,
-                    Valor = valorFinal
-                });
+                Notification("Rota de origem Inválida.");
+                return null;
+            }
+            if (!rotas.Where(x => x.Destino.ToLower() == destino.ToLower()).Any())
+            {
+                Notification("Rota de destino Inválida.");
+                return null;
             }
 
-            var resultadoFinal = resultados.OrderBy(x => x.Valor).FirstOrDefault();
+            Resultado resultadoFinal = null;
+            //Varre todas as origens possiveis
+            for (var k = 0; k < origens.Count(); ++k)
+            {
+                var resultadoCaluclo = CalculoRota(rotas, origem, destino, origens[k].Destino, origens[k].Destino, origens[k].Valor);
+                //Valida se o calculo teve algum sucesso
+                if (resultadoCaluclo != null && (resultadoFinal == null || resultadoFinal.Valor > resultadoCaluclo.Valor))
+                {
+                    resultadoFinal = resultadoCaluclo;
+                }
+            }
+
             string result = "";
             if (resultadoFinal == null)
                 result = "Não foi possivel calcular uma rota.";
@@ -80,6 +87,33 @@ namespace CalculoMelhorRota.Domain.Service
                 result = "Melhor Rota: " + resultadoFinal.Rota + " ao custo de R$:" + resultadoFinal.Valor;
 
             return result;
+        }
+
+        Resultado CalculoRota(List<Rotas> rotas, string origem, string detinoFinal, string destinoCompleto, string destinoAtual, int valorRotaAtual)
+        {
+            //Pega as origens q possuem o destino do contexto
+            var rotasDestinoAtual = rotas.Where(x => x.Origem == destinoAtual).OrderBy(x => x.Valor).FirstOrDefault();
+
+            Resultado resultadoFinal;
+
+            if (rotasDestinoAtual != null && destinoAtual != detinoFinal)
+            {
+                string rotaFinal = $@"{destinoCompleto} - {rotasDestinoAtual.Destino}";
+                int valorRotaFinal = rotasDestinoAtual.Valor + valorRotaAtual;
+
+                resultadoFinal = CalculoRota(rotas, origem, detinoFinal, rotaFinal, rotasDestinoAtual.Destino, valorRotaFinal);
+            }
+            else
+            {
+                string rotaFinal = $@"{origem} - {destinoCompleto}";
+                resultadoFinal = new Resultado
+                {
+                    Rota = rotaFinal,
+                    Valor = valorRotaAtual
+                };
+            }
+
+            return resultadoFinal;
         }
     }
 }

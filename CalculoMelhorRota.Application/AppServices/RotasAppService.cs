@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using CalculoMelhorRota.Application.Interfaces.AppServices;
 using CalculoMelhorRota.Application.ViewsModels;
+using CalculoMelhorRota.CrossCutting.Util.Configs;
 using CalculoMelhorRota.Domain.Entity;
 using CalculoMelhorRota.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace CalculoMelhorRota.Application.AppServices
 {
@@ -16,7 +16,7 @@ namespace CalculoMelhorRota.Application.AppServices
         private readonly IRotasService _rotaService;
         private readonly IMapper _mapper;
 
-        public RotasAppService(IRotasService rotasService, IMapper mapper)
+        public RotasAppService(INotifier notifier, IRotasService rotasService, IMapper mapper) : base(notifier)
         {
             _rotaService = rotasService;
             _mapper = mapper;
@@ -31,10 +31,7 @@ namespace CalculoMelhorRota.Application.AppServices
                 return result;
             }
             catch (Exception ex)
-            {
-                Success = false;
-                StatusCode = HttpStatusCode.InternalServerError;
-                Message = ex.ToString();
+            { 
                 return null;
             }
         }
@@ -48,9 +45,6 @@ namespace CalculoMelhorRota.Application.AppServices
             }
             catch (Exception ex)
             {
-                Success = false;
-                StatusCode = HttpStatusCode.InternalServerError;
-                Message = ex.ToString();
                 return null;
             }
         }

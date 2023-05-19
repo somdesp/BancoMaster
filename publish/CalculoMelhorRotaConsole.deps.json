@@ -32,6 +32,14 @@
           }
         }
       },
+      "FluentValidation/11.0.3": {
+        "runtime": {
+          "lib/netstandard2.1/FluentValidation.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.3.0"
+          }
+        }
+      },
       "Microsoft.AspNetCore.Http.Abstractions/2.2.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Http.Features": "2.2.0",
@@ -309,6 +317,7 @@
       "CalculoMelhorRota.Application/1.0.0": {
         "dependencies": {
           "AutoMapper": "12.0.1",
+          "CalculoMelhorRota.CrossCutting.Util": "1.0.0",
           "CalculoMelhorRota.Domain": "1.0.0",
           "Microsoft.AspNetCore.Mvc.Abstractions": "2.2.0"
         },
@@ -336,6 +345,10 @@
         }
       },
       "CalculoMelhorRota.Domain/1.0.0": {
+        "dependencies": {
+          "CalculoMelhorRota.CrossCutting.Util": "1.0.0",
+          "FluentValidation": "11.0.3"
+        },
         "runtime": {
           "CalculoMelhorRota.Domain.dll": {}
         }
@@ -364,6 +377,13 @@
       "sha512": "sha512-hvV62vl6Hp/WfQ24yzo3Co9+OPl8wH8hApwVtgWpiAynVJkUcs7xvehnSftawL8Pe8FrPffBRM3hwzLQqWDNjA==",
       "path": "automapper/12.0.1",
       "hashPath": "automapper.12.0.1.nupkg.sha512"
+    },
+    "FluentValidation/11.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UZSn74ufuSpHBSRivPVe1IGhOYnbyzr1jpoWqK3CTcnpDxkADcwoUbrbKhEio3MZLxTv9yVlFT7uDkb/XotOiQ==",
+      "path": "fluentvalidation/11.0.3",
+      "hashPath": "fluentvalidation.11.0.3.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Http.Abstractions/2.2.0": {
       "type": "package",
