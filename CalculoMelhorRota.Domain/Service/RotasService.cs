@@ -18,7 +18,7 @@ namespace CalculoMelhorRota.Domain.Service
             List<Rotas> rotasInseridas = _repository.GetRotas();
             rotasInseridas.AddRange(rotas);
 
-            rotasInseridas = rotasInseridas.Distinct().ToList();
+            rotasInseridas = rotasInseridas.GroupBy(x => new { x.Origem, x.Destino }).Select(o => o.First()).ToList();
             _repository.Insert(rotasInseridas);
 
             return rotas;

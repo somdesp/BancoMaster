@@ -53,11 +53,11 @@ namespace CalculoMelhorRota.Infra.Data.Repositories
                 File.AppendAllText(pathCSV, "");
 
             using (StreamWriter writer = new StreamWriter(pathCSV, false))
-                {
-                    foreach (var line in rotasInseridas)
-                        writer.WriteLine($"{line.Origem},{line.Destino},{line.Valor}");
-                }
-            
+            {
+                foreach (var line in rotasInseridas)
+                    writer.WriteLine($"{line.Origem},{line.Destino},{line.Valor}");
+            }
+
         }
     }
 }

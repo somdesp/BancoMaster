@@ -7,8 +7,11 @@
 
   <Target Name="Copia_CSV" AfterTargets="Build">
     <Message Text="Copia CSV" Importance="High" />
-
     <Copy SourceFiles="$(ProjectDir)\rotas.csv" DestinationFolder="$(OutDir)" />
+  </Target>
+  <Target Name="CopyYourFolderAfterPublish" AfterTargets="Publish">
+    <Message Text="Copia CSV" Importance="High" />
+    <Copy SourceFiles="$(ProjectDir)\rotas.csv" DestinationFolder="$(PublishDir)" />
   </Target>
 
   <ItemGroup>
@@ -31,6 +34,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.32" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.32" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +43,5 @@
 
   <ItemGroup>
     <Folder Include="Config\" />
-    <Folder Include="Service\" />
   </ItemGroup>
 </Project>
