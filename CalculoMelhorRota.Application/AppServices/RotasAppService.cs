@@ -7,6 +7,7 @@ using CalculoMelhorRota.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 
 namespace CalculoMelhorRota.Application.AppServices
@@ -31,7 +32,9 @@ namespace CalculoMelhorRota.Application.AppServices
                 return result;
             }
             catch (Exception ex)
-            { 
+            {
+                ErrorHttp = (int)HttpStatusCode.InternalServerError;
+                Notification(ex.Message);
                 return null;
             }
         }
@@ -45,6 +48,8 @@ namespace CalculoMelhorRota.Application.AppServices
             }
             catch (Exception ex)
             {
+                ErrorHttp = (int)HttpStatusCode.InternalServerError;
+                Notification(ex.Message);
                 return null;
             }
         }

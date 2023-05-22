@@ -69,16 +69,18 @@ namespace CalculoMelhorRota.Domain.Service
             }
 
             Resultado resultadoFinal = null;
+            List<Resultado> resultado = new List<Resultado>();
             //Varre todas as origens possiveis
             for (var k = 0; k < origens.Count(); ++k)
             {
-                var resultadoCaluclo = CalculoRota(rotas, origem, destino, origens[k].Destino, origens[k].Destino, origens[k].Valor);
+                var resultadoCalculo = CalculoRota(rotas, origem, destino, origens[k].Destino, origens[k].Destino, origens[k].Valor);
                 //Valida se o calculo teve algum sucesso
-                if (resultadoCaluclo != null && (resultadoFinal == null || resultadoFinal.Valor > resultadoCaluclo.Valor))
+                if (resultadoCalculo != null && (resultadoFinal == null || resultadoFinal.Valor > resultadoCalculo.Valor))
                 {
-                    resultadoFinal = resultadoCaluclo;
+                    resultadoFinal = resultadoCalculo;
                 }
             }
+
 
             string result = "";
             if (resultadoFinal == null)
@@ -92,16 +94,37 @@ namespace CalculoMelhorRota.Domain.Service
         Resultado CalculoRota(List<Rotas> rotas, string origem, string detinoFinal, string destinoCompleto, string destinoAtual, int valorRotaAtual)
         {
             //Pega as origens q possuem o destino do contexto
-            var rotasDestinoAtual = rotas.Where(x => x.Origem == destinoAtual).OrderBy(x => x.Valor).FirstOrDefault();
+            var rotasDestinoAtual = rotas.Where(x => x.Origem == destinoAtual && x.Destino != origem).OrderBy(x => x.Valor).ToList();
+            //Caso for nullo ja retorna
+            if (!rotasDestinoAtual.Any())
+                return null;
 
             Resultado resultadoFinal;
 
-            if (rotasDestinoAtual != null && destinoAtual != detinoFinal)
+            if (destinoAtual != detinoFinal && !destinoCompleto.Contains(detinoFinal))
             {
-                string rotaFinal = $@"{destinoCompleto} - {rotasDestinoAtual.Destino}";
-                int valorRotaFinal = rotasDestinoAtual.Valor + valorRotaAtual;
+                string rotaFinal = $@"{destinoCompleto} - {rotasDestinoAtual[0].Destino}";
+                int valorRotaFinal = rotasDestinoAtual[0].Valor + valorRotaAtual;
 
-                resultadoFinal = CalculoRota(rotas, origem, detinoFinal, rotaFinal, rotasDestinoAtual.Destino, valorRotaFinal);
+                if (rotasDestinoAtual.Count == 1)
+                {
+                    resultadoFinal = CalculoRota(rotas, origem, detinoFinal, rotaFinal, rotasDestinoAtual[0].Destino, valorRotaFinal);
+                }
+                else
+                {
+                    var calculosRota = new List<Resultado>();
+                    foreach (var item in rotasDestinoAtual)
+                    {
+                        rotaFinal = $@"{destinoCompleto} - {item.Destino}";
+                        valorRotaFinal = item.Valor + valorRotaAtual;
+                        var resultadoCalculoRotas = CalculoRota(rotas, origem, detinoFinal, rotaFinal, item.Destino, valorRotaFinal);
+                        if (resultadoCalculoRotas != null)//adiciona apenas os que retornarem diferente de null
+                            calculosRota.Add(resultadoCalculoRotas);
+                    }
+                    //Pega a melhor rota
+                    resultadoFinal = calculosRota.OrderBy(x => x.Valor).FirstOrDefault();
+                }
+
             }
             else
             {
