@@ -16,6 +16,13 @@ namespace CalculoMelhorRota.Domain.Service
         {
             _repository = repository;
         }
+
+        public IEnumerable<Rotas> GetAll()
+        {
+            List<Rotas> rotas = _repository.GetRotas();
+            return rotas;
+        }
+
         public IEnumerable<Rotas> Insert(IEnumerable<Rotas> rotas)
         {
             //Valida se os dados estao corretos
@@ -28,7 +35,7 @@ namespace CalculoMelhorRota.Domain.Service
                 {
                     Notification(failure.ErrorMessage);
                 }
-                return null;
+                return new List<Rotas>();
             }
 
             List<Rotas> rotasInseridas = _repository.GetRotas();

@@ -7,5 +7,6 @@ namespace CalculoMelhorRota.Domain.Interfaces
     {
         IEnumerable<Rotas> Insert(IEnumerable<Rotas> rotas);
         string MelhorRota(string rotas);
+        IEnumerable<Rotas> GetAll();
     }
 }
