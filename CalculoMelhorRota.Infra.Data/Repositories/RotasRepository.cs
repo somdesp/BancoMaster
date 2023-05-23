@@ -46,7 +46,7 @@ namespace CalculoMelhorRota.Infra.Data.Repositories
 
         public void Insert(List<Rotas> rotasInseridas)
         {
-            string pathCSV = @$"{_settingsUtils.Path}\rotas.csv";
+            string pathCSV = @$"C:\App_Rotas\rotas.csv";
 
             if (!File.Exists(pathCSV))
                 File.AppendAllText(pathCSV, "");

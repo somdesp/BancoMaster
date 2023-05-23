@@ -1,4 +1,4 @@
-﻿using CalculoMelhorRota.API.Config;
+﻿using CalculoMelhorRota.API.Config.Api;
 using CalculoMelhorRota.Application.Interfaces.AppServices;
 using CalculoMelhorRota.Application.ViewsModels;
 using CalculoMelhorRota.CrossCutting.Util.Configs;
@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace CalculoMelhorRota.API.Controllers
+namespace CalculoMelhorRota.API.Controllers.v1
 {
     [ApiController]
-    [Route("[controller]")]
+    [ApiVersion("1.0")]
+    [Route("v{version:apiVersion}/[controller]")]
     public class RotasController : MainController
     {
         private readonly IRotasAppService _rotasAppService;
@@ -20,10 +21,10 @@ namespace CalculoMelhorRota.API.Controllers
         }
 
         [HttpPut]
-        [Route("Insert")]
-        public IActionResult Insert(IEnumerable<RotasViewModel> rotas, CancellationToken cancellationToken)
+        [Route("Adicionar")]
+        public IActionResult AdicionarRotas(IEnumerable<RotasViewModel> rotas, CancellationToken cancellationToken)
         {
-            var result = _rotasAppService.Insert(rotas, cancellationToken);
+            var result = _rotasAppService.AdicionarRotas(rotas, cancellationToken);
             return CustomResponse(result);
         }
 

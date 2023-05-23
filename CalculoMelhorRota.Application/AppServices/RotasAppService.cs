@@ -23,11 +23,11 @@ namespace CalculoMelhorRota.Application.AppServices
             _mapper = mapper;
         }
 
-        public IEnumerable<RotasViewModel> Insert(IEnumerable<RotasViewModel> rotas, CancellationToken cancellationToken)
+        public IEnumerable<RotasViewModel> AdicionarRotas(IEnumerable<RotasViewModel> rotas, CancellationToken cancellationToken)
         {
             try
             {
-                var rotasResult = _rotaService.AddRotas(_mapper.Map<IEnumerable<Rotas>>(rotas));
+                var rotasResult = _rotaService.AdicionarRotas(_mapper.Map<IEnumerable<Rotas>>(rotas));
                 var result = _mapper.Map<IEnumerable<RotasViewModel>>(rotasResult);
                 return result;
             }

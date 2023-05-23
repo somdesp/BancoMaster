@@ -15,7 +15,7 @@ namespace CalculoMelhorRota.Domain.Tests
         private readonly IOptions<AppSettingsUtils> _appSettingsOptions = Options.Create(
             new AppSettingsUtils()
             {
-                Path = "D:\\Satelos\\Projetos\\Master\\BancoMaster"
+                Path = "C:\\App_Rotas\\rotas.csv"
             });
 
         [Fact]
@@ -30,7 +30,7 @@ namespace CalculoMelhorRota.Domain.Tests
             var rotas = new List<Rotas>();
 
             rotas.Add(new Rotas { Origem = "GRU", Destino = "BRC", Valor = 10 });
-            var result = rotaService.AddRotas(rotas);
+            var result = rotaService.AdicionarRotas(rotas);
 
             // assert
             Assert.Equal(rotas.Count(), result.Count());
@@ -68,7 +68,7 @@ namespace CalculoMelhorRota.Domain.Tests
 
             // act 
             var rotaService = new RotasService(mockNotifier.Object, mockRotaRepository);
-            var result = rotaService.GetAll();
+            var result = rotaService.GetRotas();
 
             // assert
             Assert.True(result.Any());

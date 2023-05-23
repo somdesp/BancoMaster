@@ -17,13 +17,13 @@ namespace CalculoMelhorRota.Domain.Service
             _repository = repository;
         }
 
-        public IEnumerable<Rotas> GetAll()
+        public IEnumerable<Rotas> GetRotas()
         {
             List<Rotas> rotas = _repository.GetRotas();
             return rotas;
         }
 
-        public IEnumerable<Rotas> AddRotas(IEnumerable<Rotas> rotas)
+        public IEnumerable<Rotas> AdicionarRotas(IEnumerable<Rotas> rotas)
         {
             //Valida se os dados estao corretos
             var resulValidation = new RotasCollectionValidator();
@@ -39,6 +39,12 @@ namespace CalculoMelhorRota.Domain.Service
             }
 
             List<Rotas> rotasInseridas = _repository.GetRotas();
+            //if (!rotasInseridas.Any())
+            //{
+            //    Notification(@$"Arquivo *.csv não carregado");
+            //    Notification(@$"Por favor executar o app CalculoMelhorRotaConsole.exe 'C:\Folder\FILE.csv\'");
+            //    return null;
+            //}
             rotasInseridas.AddRange(rotas);
             //Remove duplicidades
             rotasInseridas = rotasInseridas.GroupBy(x => new { x.Origem, x.Destino }).Select(o => o.First()).ToList();
@@ -61,6 +67,12 @@ namespace CalculoMelhorRota.Domain.Service
 
             //Retorna as rotas do CSV
             List<Rotas> rotas = _repository.GetRotas();
+            if (!rotas.Any())
+            {
+                Notification(@$"Arquivo *.csv não carregado");
+                Notification(@$"Por favor executar o app CalculoMelhorRotaConsole.exe 'C:\Folder\FILE.csv\'");
+                return null;
+            }
             //Filtra todas as origens possiveis
             var origens = rotas.Where(x => x.Origem.ToLower() == origem.ToLower()).ToList();
             //Valida se o Destino e origem existe

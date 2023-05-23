@@ -1,7 +1,4 @@
-﻿using CalculoMelhorRota.CrossCutting.Util.Configs;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Linq;
+﻿using System.Linq;
 
 namespace CalculoMelhorRota.API.Config
 {

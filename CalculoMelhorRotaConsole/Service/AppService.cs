@@ -39,10 +39,14 @@ namespace CalculoMelhorRotaConsole.Service
                     });
                 }
             }
-            _rotaService.AddRotas(rotas);
+            _rotaService.AdicionarRotas(rotas);
             if (!OperationValid())
             {
-                Console.WriteLine(_notifier.GetNotifications().Select(n => n.Message));
+                foreach (var msg in _notifier.GetNotifications().Select(n => n.Message))
+                {
+                    Console.WriteLine(msg);
+
+                }
                 return;
             }
 

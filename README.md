@@ -1,13 +1,46 @@
-# Como Executar #
-Aplicação esta na versao .net core 3.1
+# Execução #
+Aplicação esta na versão .net core 3.1.
 
-Existe 2 appSettings.json onde sera necessario setar o caminho que ficara salvo o arquivo *.csv* e dentro do projeto de teste.
-	-CalculoMelhorRota.API
-	-CalculoMelhorRotaConsole
-	-CalculoMelhorRota.Domain.Tests 
-		-RotaTests.cs linha 18
+Criar um publish do CalculoMelhorRotaConsole e executar o *CalculoMelhorRotaConsole.exe "C:\Folder\file.csv"*.
+
+Executar o projeto CalculoMelhorRota.API. https://localhost:44339/help/index.html
+
+Acessos a documentação
+```
+Usuario:admin
+Senha:admin
+```
 
 
+Modelo de entrada de dados (Adicionar Rotas).
+
+```
+[
+  {
+    "valor": 0,
+    "origem": "string",
+    "destino": "string"
+  }
+]
+```
+
+Execução Rest
+```
+/v1/Rotas/MelhorRota/{rotas}
+
+Exe: https://localhost:44339/v1/Rotas/MelhorRota/GRU-SCL
+```
+
+
+# Arquitetura #
+A modelagem da aplicação foi baseada no DDD (Domain-Driven-Design).
+
+Com uma arquitetura voltada para camadas isolando cada responsabilidade.
+![image](https://github.com/somdesp/BancoMaster/assets/26486485/8acf78a6-62eb-49c5-b500-a7230f2e9dbb)
+
+Dessa forma, se caso a aplicação for crescendo vamos inserindo serviços conforme a necessidade do dominio(negocio).
+
+![image](https://github.com/somdesp/BancoMaster/assets/26486485/c18ca567-deb5-426f-a86e-0db75a56a090)
 
 
 # Rota de Viagem #
