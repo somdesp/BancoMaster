@@ -36,11 +36,17 @@ Exe: https://localhost:44339/v1/Rotas/MelhorRota/GRU-SCL
 A modelagem da aplicação foi baseada no DDD (Domain-Driven-Design).
 
 Com uma arquitetura voltada para camadas isolando cada responsabilidade.
-![image](https://github.com/somdesp/BancoMaster/assets/26486485/8acf78a6-62eb-49c5-b500-a7230f2e9dbb)
+
+![image](https://github.com/somdesp/BancoMaster/assets/26486485/67eefb7d-83b1-47b7-8412-01b44d584647)
 
 Dessa forma, se caso a aplicação for crescendo vamos inserindo serviços conforme a necessidade do dominio(negocio).
 
-![image](https://github.com/somdesp/BancoMaster/assets/26486485/c18ca567-deb5-426f-a86e-0db75a56a090)
+![image](https://github.com/somdesp/BancoMaster/assets/26486485/432a44a0-b836-46bb-9f8d-e104f63a4019)
+
+Utilizaçoes de ViewModels para não retornar a entidade para o front.
+
+![image](https://github.com/somdesp/BancoMaster/assets/26486485/9ab3dc11-b2c4-43c8-bdc5-191e385107dd)
+
 
 
 # Rota de Viagem #
