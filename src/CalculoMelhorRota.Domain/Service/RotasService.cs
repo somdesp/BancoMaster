@@ -39,12 +39,7 @@ namespace CalculoMelhorRota.Domain.Service
             }
 
             List<Rotas> rotasInseridas = _repository.GetRotas();
-            //if (!rotasInseridas.Any())
-            //{
-            //    Notification(@$"Arquivo *.csv não carregado");
-            //    Notification(@$"Por favor executar o app CalculoMelhorRotaConsole.exe 'C:\Folder\FILE.csv\'");
-            //    return null;
-            //}
+
             rotasInseridas.AddRange(rotas);
             //Remove duplicidades
             rotasInseridas = rotasInseridas.GroupBy(x => new { x.Origem, x.Destino }).Select(o => o.First()).ToList();

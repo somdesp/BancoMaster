@@ -49,7 +49,10 @@ namespace CalculoMelhorRota.Infra.Data.Repositories
             string pathCSV = @$"C:\App_Rotas\rotas.csv";
 
             if (!File.Exists(pathCSV))
+            {
+                Directory.CreateDirectory(@$"C:\App_Rotas\");
                 File.AppendAllText(pathCSV, "");
+            }
 
             using (StreamWriter writer = new StreamWriter(pathCSV, false))
             {
