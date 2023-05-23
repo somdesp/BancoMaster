@@ -39,7 +39,7 @@ namespace CalculoMelhorRotaConsole.Service
                     });
                 }
             }
-            _rotaService.Insert(rotas);
+            _rotaService.AddRotas(rotas);
             if (!OperationValid())
             {
                 Console.WriteLine(_notifier.GetNotifications().Select(n => n.Message));

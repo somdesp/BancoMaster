@@ -1,4 +1,12 @@
 # Como Executar #
+Aplicação esta na versao .net core 3.1
+
+Existe 2 appSettings.json onde sera necessario setar o caminho que ficara salvo o arquivo *.csv* e dentro do projeto de teste.
+	-CalculoMelhorRota.API
+	-CalculoMelhorRotaConsole
+	-CalculoMelhorRota.Domain.Tests 
+		-RotaTests.cs linha 18
+
 
 
 

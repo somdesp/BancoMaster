@@ -5,7 +5,7 @@ namespace CalculoMelhorRota.Domain.Interfaces
 {
     public interface IRotasService
     {
-        IEnumerable<Rotas> Insert(IEnumerable<Rotas> rotas);
+        IEnumerable<Rotas> AddRotas(IEnumerable<Rotas> rotas);
         string MelhorRota(string rotas);
         IEnumerable<Rotas> GetAll();
     }

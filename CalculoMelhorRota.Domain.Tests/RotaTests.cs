@@ -1,9 +1,7 @@
 using CalculoMelhorRota.CrossCutting.Util.Configs;
 using CalculoMelhorRota.Domain.Entity;
-using CalculoMelhorRota.Domain.Interfaces;
 using CalculoMelhorRota.Domain.Service;
 using CalculoMelhorRota.Infra.Data.Repositories;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
 using System.Collections.Generic;
@@ -14,38 +12,43 @@ namespace CalculoMelhorRota.Domain.Tests
 {
     public class RotaTests
     {
+        private readonly IOptions<AppSettingsUtils> _appSettingsOptions = Options.Create(
+            new AppSettingsUtils()
+            {
+                Path = "D:\\Satelos\\Projetos\\Master\\BancoMaster"
+            });
+
         [Fact]
         public void Rota_Insert()
         {
             // arrange
-            var someOptions = Options.Create(new AppSettingsUtils() { Path = "D:\\Satelos\\Projetos\\Master\\BancoMaster" });
             var mockNotifier = new Mock<INotifier>();
-            var mockRotaRepository = new RotasRepository(someOptions);
+            var mockRotaRepository = new RotasRepository(_appSettingsOptions);
 
             // act 
             var rotaService = new RotasService(mockNotifier.Object, mockRotaRepository);
             var rotas = new List<Rotas>();
 
-            rotas.Add(new Rotas { Origem = "GRU", Destino = "BRC" });
-            var result = rotaService.Insert(rotas);
+            rotas.Add(new Rotas { Origem = "GRU", Destino = "BRC", Valor = 10 });
+            var result = rotaService.AddRotas(rotas);
 
             // assert
             Assert.Equal(rotas.Count(), result.Count());
 
         }
 
-        [Theory]
+        [Theory(DisplayName = "Executa Melhor Rota")]
         [InlineData("GRU", "BRC", "Melhor Rota: GRU - BRC ao custo de R$:10")]
-        [InlineData("GRU", "CDG", "Melhor Rota: GRU - BRC ao custo de R$:40")]
-        [InlineData("SCL", "GRU", "Melhor Rota: GRU - BRC ao custo de R$:45")]
-        [InlineData("BRC", "SCL", "Melhor Rota: GRU - BRC ao custo de R$:5")]
+        [InlineData("GRU", "CDG", "Melhor Rota: GRU - BRC - SCL - ORL - CDG ao custo de R$:40")]
+        [InlineData("SCL", "GRU", "Melhor Rota: SCL - ORL - GRU ao custo de R$:45")]
+        [InlineData("BRC", "SCL", "Melhor Rota: BRC - SCL ao custo de R$:5")]
+        [InlineData("GRU", "CFD", "Melhor Rota: GRU - BRC - SCL - ORL - CDG - CFD ao custo de R$:70")]
 
         public void Melhor_Rota(string origem, string destino, string resultado)
         {
             // arrange
-            var appSettingsOptions = Options.Create(new AppSettingsUtils() { Path = "D:\\Satelos\\Projetos\\Master\\BancoMaster" });
             var mockNotifier = new Mock<INotifier>();
-            var mockRotaRepository = new RotasRepository(appSettingsOptions);
+            var mockRotaRepository = new RotasRepository(_appSettingsOptions);
 
             // act 
             var rotaService = new RotasService(mockNotifier.Object, mockRotaRepository);
@@ -56,23 +59,19 @@ namespace CalculoMelhorRota.Domain.Tests
 
         }
 
-        //[Fact]
-        public void Get_Insert()
+        [Fact]
+        public void Get_Rotas()
         {
-
             // arrange
-            var someOptions = Options.Create(new AppSettingsUtils() { Path = "D:\\Satelos\\Projetos\\Master\\BancoMaster" });
             var mockNotifier = new Mock<INotifier>();
-            var mockRotaRepository = new RotasRepository(someOptions);
-
+            var mockRotaRepository = new RotasRepository(_appSettingsOptions);
 
             // act 
             var rotaService = new RotasService(mockNotifier.Object, mockRotaRepository);
             var result = rotaService.GetAll();
 
             // assert
-            result.DefaultIfEmpty();
-
+            Assert.True(result.Any());
         }
     }
 }

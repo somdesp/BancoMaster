@@ -27,7 +27,7 @@ namespace CalculoMelhorRota.Application.AppServices
         {
             try
             {
-                var rotasResult = _rotaService.Insert(_mapper.Map<IEnumerable<Rotas>>(rotas));
+                var rotasResult = _rotaService.AddRotas(_mapper.Map<IEnumerable<Rotas>>(rotas));
                 var result = _mapper.Map<IEnumerable<RotasViewModel>>(rotasResult);
                 return result;
             }

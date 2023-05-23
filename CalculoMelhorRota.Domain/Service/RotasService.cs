@@ -23,7 +23,7 @@ namespace CalculoMelhorRota.Domain.Service
             return rotas;
         }
 
-        public IEnumerable<Rotas> Insert(IEnumerable<Rotas> rotas)
+        public IEnumerable<Rotas> AddRotas(IEnumerable<Rotas> rotas)
         {
             //Valida se os dados estao corretos
             var resulValidation = new RotasCollectionValidator();
@@ -89,33 +89,30 @@ namespace CalculoMelhorRota.Domain.Service
             }
 
 
-            string result = "";
+            string strResultado = "";
             if (resultadoFinal == null)
-                result = "Não foi possivel calcular uma rota.";
+                strResultado = "Não foi possivel calcular uma rota.";
             else
-                result = "Melhor Rota: " + resultadoFinal.Rota + " ao custo de R$:" + resultadoFinal.Valor;
+                strResultado = "Melhor Rota: " + resultadoFinal.Rota + " ao custo de R$:" + resultadoFinal.Valor;
 
-            return result;
+            return strResultado;
         }
 
-        Resultado CalculoRota(List<Rotas> rotas, string origem, string detinoFinal, string destinoCompleto, string destinoAtual, int valorRotaAtual)
+        Resultado CalculoRota(List<Rotas> rotas, string origem, string destinoFinal, string destinoCompleto, string destinoAtual, int valorRotaAtual)
         {
             //Pega as origens q possuem o destino do contexto
             var rotasDestinoAtual = rotas.Where(x => x.Origem == destinoAtual && x.Destino != origem).OrderBy(x => x.Valor).ToList();
-            //Caso for nullo ja retorna
-            if (!rotasDestinoAtual.Any())
-                return null;
 
             Resultado resultadoFinal;
 
-            if (destinoAtual != detinoFinal && !destinoCompleto.Contains(detinoFinal))
+            if (rotasDestinoAtual.Any() && destinoAtual != destinoFinal && !destinoCompleto.Contains(destinoFinal))
             {
                 string rotaFinal = $@"{destinoCompleto} - {rotasDestinoAtual[0].Destino}";
                 int valorRotaFinal = rotasDestinoAtual[0].Valor + valorRotaAtual;
 
                 if (rotasDestinoAtual.Count == 1)
                 {
-                    resultadoFinal = CalculoRota(rotas, origem, detinoFinal, rotaFinal, rotasDestinoAtual[0].Destino, valorRotaFinal);
+                    resultadoFinal = CalculoRota(rotas, origem, destinoFinal, rotaFinal, rotasDestinoAtual[0].Destino, valorRotaFinal);
                 }
                 else
                 {
@@ -124,7 +121,7 @@ namespace CalculoMelhorRota.Domain.Service
                     {
                         rotaFinal = $@"{destinoCompleto} - {item.Destino}";
                         valorRotaFinal = item.Valor + valorRotaAtual;
-                        var resultadoCalculoRotas = CalculoRota(rotas, origem, detinoFinal, rotaFinal, item.Destino, valorRotaFinal);
+                        var resultadoCalculoRotas = CalculoRota(rotas, origem, destinoFinal, rotaFinal, item.Destino, valorRotaFinal);
                         if (resultadoCalculoRotas != null)//adiciona apenas os que retornarem diferente de null
                             calculosRota.Add(resultadoCalculoRotas);
                     }
@@ -135,6 +132,11 @@ namespace CalculoMelhorRota.Domain.Service
             }
             else
             {
+                //Caso for nullo valida se possui o destino
+                if (!rotasDestinoAtual.Any() && !destinoCompleto.Contains(destinoFinal))
+                    return null;
+
+
                 string rotaFinal = $@"{origem} - {destinoCompleto}";
                 resultadoFinal = new Resultado
                 {
